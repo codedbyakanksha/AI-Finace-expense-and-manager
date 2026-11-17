@@ -1,0 +1,471 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Finance Manager - Dashboard</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .sidebar {
+            position: fixed;
+            width: 245px;
+            height: 100vh;
+            background: #111827;
+            padding: 25px 15px;
+            color: white;
+        }
+
+        .logo {
+            text-align: center;
+            color: #38bdf8;
+            margin-bottom: 35px;
+            font-size: 23px;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 14px;
+            margin-bottom: 8px;
+            text-decoration: none;
+            color: #cbd5e1;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .main {
+            margin-left: 245px;
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .topbar h1 {
+            font-size: 28px;
+        }
+
+        .welcome {
+            color: #64748b;
+            margin-top: 8px;
+        }
+
+        .user {
+            background: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #00000010;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #0000000d;
+            border-left: 5px solid #2563eb;
+        }
+
+        .card:nth-child(1) {
+            border-color: #22c55e;
+        }
+
+        .card:nth-child(2) {
+            border-color: #ef4444;
+        }
+
+        .card:nth-child(3) {
+            border-color: #3b82f6;
+        }
+
+        .card:nth-child(4) {
+            border-color: #a855f7;
+        }
+
+        .card p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .card h2 {
+            font-size: 25px;
+            margin-top: 18px;
+        }
+
+        .green { color: #16a34a; }
+        .red { color: #dc2626; }
+        .blue { color: #2563eb; }
+        .purple { color: #9333ea; }
+
+        .section {
+            background: white;
+            margin-top: 28px;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #0000000d;
+        }
+
+        .section h2 {
+            margin-bottom: 20px;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .action {
+            text-align: center;
+            text-decoration: none;
+            padding: 23px 12px;
+            background: #eff6ff;
+            color: #1d4ed8;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .action:hover {
+            background: #dbeafe;
+            transform: translateY(-3px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #475569;
+        }
+
+        .income {
+            color: #16a34a;
+            font-weight: bold;
+        }
+
+        .expense {
+            color: #dc2626;
+            font-weight: bold;
+        }
+
+        .empty {
+            text-align: center;
+            color: #64748b;
+            padding: 25px;
+        }
+
+        .tips {
+            line-height: 2.2;
+            color: #475569;
+        }
+
+        .footer {
+            text-align: center;
+            color: #94a3b8;
+            margin-top: 30px;
+            padding: 20px;
+        }
+
+        @media(max-width: 1000px) {
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width: 700px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .cards, .actions {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+    <h2 class="logo">💰 AI Finance</h2>
+
+    <a href="{{ url_for('dashboard') }}" class="active">
+        🏠 Dashboard
+    </a>
+
+    <a href="{{ url_for('transactions') }}">
+        💳 Transactions
+    </a>
+
+    <a href="{{ url_for('analysis') }}">
+        📊 Expense Analysis
+    </a>
+
+    <a href="{{ url_for('budget') }}">
+        🎯 Monthly Budget
+    </a>
+
+    <a href="{{ url_for('prediction') }}">
+        🤖 AI Prediction
+    </a>
+
+    <a href="{{ url_for('savings') }}">
+        💎 Savings Goals
+    </a>
+
+    <a href="{{ url_for('reports') }}">
+        📄 Monthly Reports
+    </a>
+
+    <a href="{{ url_for('logout') }}">
+        🚪 Logout
+    </a>
+
+</div>
+
+
+<!-- MAIN DASHBOARD -->
+
+<div class="main">
+
+    <div class="topbar">
+
+        <div>
+            <h1>Dashboard Overview</h1>
+
+            <p class="welcome">
+                Welcome back! Manage your money smartly.
+            </p>
+        </div>
+
+        <div class="user">
+            👤 {{ session.get('user_name', 'User') }}
+        </div>
+
+    </div>
+
+
+    <!-- SUMMARY CARDS -->
+
+    <div class="cards">
+
+        <div class="card">
+            <p>💚 Total Income</p>
+            <h2 class="green">
+                ₹{{ "%.2f"|format(income|float) }}
+            </h2>
+        </div>
+
+        <div class="card">
+            <p>❤️ Total Expenses</p>
+            <h2 class="red">
+                ₹{{ "%.2f"|format(expense|float) }}
+            </h2>
+        </div>
+
+        <div class="card">
+            <p>💙 Available Balance</p>
+            <h2 class="blue">
+                ₹{{ "%.2f"|format(balance|float) }}
+            </h2>
+        </div>
+
+        <div class="card">
+            <p>📋 Total Transactions</p>
+            <h2 class="purple">
+                {{ total }}
+            </h2>
+        </div>
+
+    </div>
+
+
+    <!-- QUICK ACTIONS -->
+
+    <div class="section">
+
+        <h2>⚡ Quick Actions</h2>
+
+        <div class="actions">
+
+            <a href="{{ url_for('transactions') }}"
+               class="action">
+                ➕ Add Transaction
+            </a>
+
+            <a href="{{ url_for('analysis') }}"
+               class="action">
+                📊 Expense Analysis
+            </a>
+
+            <a href="{{ url_for('prediction') }}"
+               class="action">
+                🤖 AI Forecasting
+            </a>
+
+            <a href="{{ url_for('budget') }}"
+               class="action">
+                🎯 Set Monthly Budget
+            </a>
+
+            <a href="{{ url_for('savings') }}"
+               class="action">
+                💎 Savings Goals
+            </a>
+
+            <a href="{{ url_for('reports') }}"
+               class="action">
+                📄 View Reports
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- RECENT TRANSACTIONS -->
+
+    <div class="section">
+
+        <h2>📋 Recent Transactions</h2>
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Receipt</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for item in recent %}
+
+                <tr>
+
+                    <td>{{ item['title'] }}</td>
+
+                    <td>{{ item['category'] }}</td>
+
+                    <td>{{ item['transaction_date'] }}</td>
+
+                    <td>
+                        {% if item['type'] == 'Income' %}
+                            <span class="income">Income</span>
+                        {% else %}
+                            <span class="expense">Expense</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        ₹{{ "%.2f"|format(item['amount']) }}
+                    </td>
+
+                    <td>
+                        <a href="{{ url_for('receipt', id=item['id']) }}">
+                            📥 PDF
+                        </a>
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+                    <td colspan="6" class="empty">
+                        No transactions yet.
+                        Add your first transaction!
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- FINANCIAL TIPS -->
+
+    <div class="section">
+
+        <h2>💡 Smart Financial Tips</h2>
+
+        <div class="tips">
+            ✔ Track your daily expenses.<br>
+            ✔ Save at least 20% of your income.<br>
+            ✔ Avoid unnecessary shopping.<br>
+            ✔ Set a monthly spending budget.<br>
+            ✔ Check your AI expense predictions.
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+        © 2026 AI Finance & Expense Manager
+    </div>
+
+</div>
+
+</body>
+</html>
